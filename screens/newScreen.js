@@ -22,7 +22,8 @@ class NewScreen extends React.Component {
     constructor() {
       super();
       this.state = {
-        taskname : ''
+        taskname : '',
+        taskdate : ''
       }  
     }
 
@@ -31,12 +32,25 @@ class NewScreen extends React.Component {
     };
 
     addNewTask = () => {
-      if (this.state.taskname.trim() == '') {
+      let tdate = new Date(parseInt(this.state.taskdate.split('-')[2]),(parseInt(this.state.taskdate.split('-')[1])-1),parseInt(this.state.taskdate.split('-')[0]));
+      console.log(tdate);
+      if (this.state.taskname.trim() == '' && this.state.taskdate.trim() == '') {
+        alert('Task Name & Due Date Required!');
+        return false;
+      } if (this.state.taskname.trim() == '') {
         alert('Task Name Required!');
         return false;
       } if (this.state.taskname.trim() != '' && this.state.taskname.length <= 2) {
         alert('Enter valid task name!');
         return false
+      }if (this.state.taskdate.trim() == '') {
+        alert('Due Date Required!');
+        return false;
+      }if (this.state.taskdate.length != 10) {
+        alert('Enter Valid Due Date');
+        return false;
+      }if(tdate < new Date()){
+        alert('Do not enter past date in Due Date');
       } else {
         let obj = {
           taskId : this.props.todos.length + 1,
@@ -60,6 +74,13 @@ class NewScreen extends React.Component {
               onChangeText={(taskname)=> this.setState({taskname})}
               value={this.state.taskname}
             />
+            <Text>Due Date : </Text>
+            <TextInput 
+              style={styles.inputStyle} 
+              onChangeText={(taskdate)=> this.setState({taskdate})}
+              value={this.state.taskdate}
+            />
+            <Text>Note : Date pattern must be 'DD-MM-YYYY'</Text>
             <Button 
               title="ADD"
               color="#841584"
@@ -122,6 +143,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     marginTop: 10,
+    marginBottom: 10,
     padding: 5
   },
   buttonStyle: {

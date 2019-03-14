@@ -6,19 +6,23 @@ const initialState = {
     todos: [{
         taskId: '1',
         taskName: 'school',
-        status: 'A'
+        status: 'A',
+        dueDate: '14-03-2019'
     },{
         taskId: '2',
         taskName: 'gym',
-        status: 'C'
+        status: 'C',
+        dueDate: '20-03-2019'
     },{
         taskId: '3',
         taskName: 'office',
-        status: 'A'
+        status: 'A',
+        dueDate: '22-03-2019'
     },{
         taskId: '4',
         taskName: 'games',
-        status: 'C'
+        status: 'C',
+        dueDate: '24-03-2019'
     },],
 };
 

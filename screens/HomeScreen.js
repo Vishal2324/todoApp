@@ -13,7 +13,7 @@ import {
   Switch
 } from 'react-native';
 import { CheckBox } from 'native-base';
-import { WebBrowser } from 'expo';
+import { WebBrowser, Icon } from 'expo';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 import { MonoText } from '../components/StyledText';
 
@@ -74,6 +74,13 @@ class HomeScreen extends React.Component {
           animationType="slide" 
           >
           <View style={styles.modalStyle}>
+            <Icon.Ionicons
+                name={Platform.OS === 'ios' ? "ios-close-circle" : "md-close-circle"}
+                size={26}
+                style={styles.close}
+                color={"#000000"}
+                onPress={() => {this.setState({modalVisible : false})}}
+              />
             <Text>{this.state.taskId}</Text>
             <TextInput 
                 style={styles.inputStyle} 
@@ -92,25 +99,37 @@ class HomeScreen extends React.Component {
         </Modal>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            {this.props.todos.map((item, i)=> 
-              <View key={item.taskId} style={styles.taskStyle}>
-                <Text style={{textTransform: 'uppercase'}}>{item.taskId + "  -  " + item.taskName}</Text>  
-                <Switch style={styles.switch} value={item.status == 'A' ? false : true} disabled={true}/>
-                <Text>{item.status == 'A' ? 'Task is Active' : 'Task Completed'}</Text>
-                <Button 
-                  title="EDIT"
-                  color="yellow"
-                  style={styles.buttonStyle}
-                  onPress={() => {this.updateTaskName(item)}}
-                />
-                <Button 
-                  title="DELETE"
-                  color="red"
-                  style={styles.buttonStyle}
-                  onPress={()=> this.props.deleteTodo(item.taskId)}
-                />
-              </View>
-            )}
+            {this.props.todos.map((item, i)=> {
+              var oneday = 1000 * 60 * 60 * 24;
+              var today = new Date();
+              var date_1 = today.getTime();
+              var duedate = new Date(parseInt(item.dueDate.split('-')[2]),(parseInt(item.dueDate.split('-')[1])-1),parseInt(item.dueDate.split('-')[0]));
+              var date_2 = duedate.getTime();
+              var diff_ms = date_2 - date_1;
+              var daysleft = Math.round(diff_ms/oneday);
+              return(
+                <View key={item.taskId} style={styles.taskStyle}>
+                  <Text style={{textTransform: 'uppercase'}}>{item.taskId + "  -  " + item.taskName}</Text>  
+                  <Switch style={styles.switch} value={item.status == 'A' ? false : true} disabled={true}/>
+                  <Text>{item.status == 'A' ? 'Task is Active' : 'Task Completed'}</Text>
+                  <Text>{daysleft < 0 ? 'Due Date Expired' : 'Days left : ' + daysleft}</Text>
+                  <Icon.Ionicons
+                    name={Platform.OS === 'ios' ? "ios-create" : "md-create"}
+                    size={26}
+                    style={styles.edit}
+                    color={"orange"}
+                    onPress={() => {this.updateTaskName(item)}}
+                  />
+                  <Icon.Ionicons
+                    name={Platform.OS === 'ios' ? "ios-trash" : "md-trash"}
+                    size={26}
+                    style={styles.delete}
+                    color={"red"}
+                    onPress={()=> this.props.deleteTodo(item.taskId)}
+                  />
+                </View>
+              )
+            })}
             {this.props.todos.length == 0 && <Text>No Tasks to show, Please add one.</Text>}
           </View>
         </ScrollView>
@@ -178,6 +197,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   taskStyle: {
+    backgroundColor: '#fff',
     borderColor: '#888',
     borderWidth: 1,
     marginBottom: 10,
@@ -197,5 +217,20 @@ const styles = StyleSheet.create({
   },
    switch : {
     marginTop: 10
+  },
+  delete: {
+    position: "absolute",
+    right: 10,
+    top: 20
+  },
+  edit: {
+    position: "absolute",
+    right: 40,
+    top: 20
+  },
+  close: {
+    position: "absolute",
+    right: 20,
+    top: 40
   }
 });

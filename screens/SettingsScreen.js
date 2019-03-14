@@ -1,23 +1,14 @@
 import React from 'react';
 import {
-  Image,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   Button,
   TextInput,
   Modal,
   Switch
 } from 'react-native';
-import { CheckBox } from 'native-base';
-import { WebBrowser } from 'expo';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-import { MonoText } from '../components/StyledText';
-
-import AddToDoButton from '../components/add_todo_button';
 import { connect } from 'react-redux';
 import { addTodo, deleteTodo, updateTodo } from '../store/reducers/todo_reducer';
 
@@ -34,7 +25,7 @@ class SettingsScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Active Tasks',
+    title: 'Completed Tasks',
   };
 
   updateTaskName = (data) => {
