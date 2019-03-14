@@ -6,6 +6,25 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import NewScreen from '../screens/newScreen';
+
+const NewStack = createStackNavigator({
+  NewToDo: NewScreen,
+});
+
+NewStack.navigationOptions = {
+  tabBarLabel: 'Add Tasks',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === 'ios'
+          ? `ios-add-circle`
+          : 'md-add-circle'
+      }
+    />
+  ),
+};
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -54,6 +73,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
+  NewStack,
   HomeStack,
   LinksStack,
   SettingsStack,

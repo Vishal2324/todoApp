@@ -3,7 +3,19 @@ const UPDATE_TODO = 'TODO/TODO/UPDATE_TODO';
 const DELETE_TODO = 'TODO/TODO/DELETE_TODO';
 
 const initialState = { 
-    todos: ['abc', 'vishal', 'balk', 'gaurav'],
+    todos: [{
+        taskId: '1',
+        taskName: 'school'
+    },{
+        taskId: '2',
+        taskName: 'gym'
+    },{
+        taskId: '3',
+        taskName: 'office'
+    },{
+        taskId: '4',
+        taskName: 'games'
+    },],
 };
 
 export default function todo_reducer(state = initialState, action) {
@@ -17,9 +29,11 @@ export default function todo_reducer(state = initialState, action) {
       };
     case UPDATE_TODO:    
         let todos = [...state.todos];
+        console.log(action.todo);
         let indexOfUpdate = todos.findIndex((todo) =>{
-            return todo.title == action.todo.title;
+            return todo.taskId == action.todo.taskId;
         });        
+        console.log(indexOfUpdate);
         todos[indexOfUpdate] = action.todo;        
         return {
             ...state,
@@ -27,9 +41,7 @@ export default function todo_reducer(state = initialState, action) {
         }
     case DELETE_TODO:
         return {
-            todos: state.todos.filter(function(todo) {
-                return todo.title != action.todo.title;
-            })
+            todos: state.todos.filter(x => x.taskId !== action.todo)
         }
     default:
       return state;

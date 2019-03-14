@@ -6,6 +6,8 @@ import { Image,
   Text,
   TouchableOpacity,
   View, } from 'react-native';
+  import { connect } from 'react-redux';
+  import { addTodo, deleteTodo, updateTodo } from '../store/reducers/todo_reducer';
 
 export default class LinksScreen extends React.Component {
   static navigationOptions = {

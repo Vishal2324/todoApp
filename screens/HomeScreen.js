@@ -7,9 +7,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Button,
+  TextInput,
+  Modal
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 import { MonoText } from '../components/StyledText';
 
 import AddToDoButton from '../components/add_todo_button';
@@ -17,18 +20,86 @@ import { connect } from 'react-redux';
 import { addTodo, deleteTodo, updateTodo } from '../store/reducers/todo_reducer';
 
 class HomeScreen extends React.Component {
+  constructor () {
+    super();
+    this.state = {
+      newname : '',
+      updateTask : {
+        taskName : '',
+        taskId : ''
+      },
+      modalVisible : false
+    }
+  }
   static navigationOptions = {
     title: 'All Tasks',
   };
 
+  updateTaskName = (data) => {
+    this.setState({
+      updateTask : {
+        taskName : data.taskName,
+        taskId : data.taskId
+      },
+      modalVisible : true
+    })
+  }
+
+  closeModal = () => {
+    this.props.updateTodo(this.state.updateTask);
+    this.setState({
+      modalVisible : false
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          transparent={false}
+          animationType="slide" 
+          >
+          <View style={styles.modalStyle}>
+            <Text>{this.state.updateTask.taskId}</Text>
+            <TextInput 
+                style={styles.inputStyle} 
+                onChangeText={(newname)=> this.setState({updateTask: {taskName : newname, taskId : this.state.updateTask.taskId}})}
+                value={this.state.updateTask.taskName}
+              />
+              <Button 
+                title="UPDATE TASK"
+                color="blue"
+                style={styles.buttonStyle}
+                onPress={this.closeModal}
+              />
+          </View>
+        </Modal>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             {this.props.todos.map((item, i)=> 
-              <Text key={i}>{item}</Text>  
+              <View key={item.taskId} style={styles.taskStyle}>
+                <Text style={{textTransform: 'uppercase'}}>{item.taskId + "  -  " + item.taskName}</Text>  
+                {/* {<TextInput 
+                  style={styles.inputStyle} 
+                  onChangeText={(newname)=> this.setState({newname})}
+                  value={item.taskName}
+                />} */}
+                <Button 
+                  title="EDIT"
+                  color="yellow"
+                  style={styles.buttonStyle}
+                  onPress={() => {this.updateTaskName(item)}}
+                />
+                <Button 
+                  title="DELETE"
+                  color="red"
+                  style={styles.buttonStyle}
+                  onPress={()=> this.props.deleteTodo(item.taskId)}
+                />
+              </View>
             )}
+            {this.props.todos.length == 0 && <Text>No Tasks to show, Please add one.</Text>}
           </View>
 
           {/* <View style={styles.getStartedContainer}>
@@ -51,12 +122,6 @@ class HomeScreen extends React.Component {
             </TouchableOpacity>
           </View> */}
         </ScrollView>
-
-        {/* <View style={styles.tabBarInfoContainer}> */}
-          {/* <View style={[styles.codeHighlightContainer, styles.navigationFilename]}> */}
-            <AddToDoButton/>
-          {/* </View> */}
-        {/* </View> */}
       </View>
     );
   }
@@ -117,88 +182,25 @@ export default connect(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ddd',
+    padding: 20
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
+  taskStyle: {
+    borderColor: '#888',
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 10,
+  },inputStyle: {
+    height: 40,
+    borderColor: '#000',
+    borderWidth: 1,
     marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 0,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
+    padding: 5
+  },modalStyle: {
+    paddingTop: 100,
+    paddingLeft: 30,
+    paddingRight: 30,
+    backgroundColor: '#888',
+    height: '100%'
+  }
 });
