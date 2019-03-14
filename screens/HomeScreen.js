@@ -9,8 +9,10 @@ import {
   View,
   Button,
   TextInput,
-  Modal
+  Modal,
+  Switch
 } from 'react-native';
+import { CheckBox } from 'native-base';
 import { WebBrowser } from 'expo';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 import { MonoText } from '../components/StyledText';
@@ -24,10 +26,9 @@ class HomeScreen extends React.Component {
     super();
     this.state = {
       newname : '',
-      updateTask : {
-        taskName : '',
-        taskId : ''
-      },
+      taskName : '',
+      taskId : '',
+      status : '',
       modalVisible : false
     }
   }
@@ -37,19 +38,31 @@ class HomeScreen extends React.Component {
 
   updateTaskName = (data) => {
     this.setState({
-      updateTask : {
         taskName : data.taskName,
-        taskId : data.taskId
-      },
-      modalVisible : true
+        taskId : data.taskId,
+        status : data.status,
+        modalVisible : true
     })
   }
 
   closeModal = () => {
-    this.props.updateTodo(this.state.updateTask);
+    let obj = {
+      taskName : this.state.taskName,
+      taskId : this.state.taskId,
+      status : this.state.status,
+    }
+    this.props.updateTodo(obj);
     this.setState({
       modalVisible : false
     })
+  }
+
+  changeTaskStatus = (e) => {
+    if(this.state.status == 'A'){
+      this.setState({status : 'C'})
+    }else{
+      this.setState({status : 'A'})
+    }
   }
 
   render() {
@@ -61,12 +74,14 @@ class HomeScreen extends React.Component {
           animationType="slide" 
           >
           <View style={styles.modalStyle}>
-            <Text>{this.state.updateTask.taskId}</Text>
+            <Text>{this.state.taskId}</Text>
             <TextInput 
                 style={styles.inputStyle} 
-                onChangeText={(newname)=> this.setState({updateTask: {taskName : newname, taskId : this.state.updateTask.taskId}})}
-                value={this.state.updateTask.taskName}
+                onChangeText={(newname)=> this.setState({taskName : newname})}
+                value={this.state.taskName}
               />
+              <Switch style={styles.switch} value={this.state.status == 'A' ? false : true} onValueChange={this.changeTaskStatus} />
+              <Text>{this.state.status == 'A' ? 'Task is Active' : 'Task Completed'}</Text>
               <Button 
                 title="UPDATE TASK"
                 color="blue"
@@ -80,11 +95,8 @@ class HomeScreen extends React.Component {
             {this.props.todos.map((item, i)=> 
               <View key={item.taskId} style={styles.taskStyle}>
                 <Text style={{textTransform: 'uppercase'}}>{item.taskId + "  -  " + item.taskName}</Text>  
-                {/* {<TextInput 
-                  style={styles.inputStyle} 
-                  onChangeText={(newname)=> this.setState({newname})}
-                  value={item.taskName}
-                />} */}
+                <Switch style={styles.switch} value={item.status == 'A' ? false : true} disabled={true}/>
+                <Text>{item.status == 'A' ? 'Task is Active' : 'Task Completed'}</Text>
                 <Button 
                   title="EDIT"
                   color="yellow"
@@ -101,26 +113,6 @@ class HomeScreen extends React.Component {
             )}
             {this.props.todos.length == 0 && <Text>No Tasks to show, Please add one.</Text>}
           </View>
-
-          {/* <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View> */}
-
-          {/* <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View> */}
         </ScrollView>
       </View>
     );
@@ -202,5 +194,8 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     backgroundColor: '#888',
     height: '100%'
+  },
+   switch : {
+    marginTop: 10
   }
 });

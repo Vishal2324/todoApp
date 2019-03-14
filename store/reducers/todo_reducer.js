@@ -5,16 +5,20 @@ const DELETE_TODO = 'TODO/TODO/DELETE_TODO';
 const initialState = { 
     todos: [{
         taskId: '1',
-        taskName: 'school'
+        taskName: 'school',
+        status: 'A'
     },{
         taskId: '2',
-        taskName: 'gym'
+        taskName: 'gym',
+        status: 'C'
     },{
         taskId: '3',
-        taskName: 'office'
+        taskName: 'office',
+        status: 'A'
     },{
         taskId: '4',
-        taskName: 'games'
+        taskName: 'games',
+        status: 'C'
     },],
 };
 
@@ -29,11 +33,11 @@ export default function todo_reducer(state = initialState, action) {
       };
     case UPDATE_TODO:    
         let todos = [...state.todos];
-        console.log(action.todo);
+        //console.log(action.todo);
         let indexOfUpdate = todos.findIndex((todo) =>{
             return todo.taskId == action.todo.taskId;
         });        
-        console.log(indexOfUpdate);
+        //console.log(indexOfUpdate);
         todos[indexOfUpdate] = action.todo;        
         return {
             ...state,

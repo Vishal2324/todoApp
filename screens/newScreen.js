@@ -40,7 +40,8 @@ class NewScreen extends React.Component {
       } else {
         let obj = {
           taskId : this.props.todos.length + 1,
-          taskName : this.state.taskname
+          taskName : this.state.taskname,
+          status : 'A'
         }
         this.props.addTodo(obj);
         this.setState({taskname : ''},
