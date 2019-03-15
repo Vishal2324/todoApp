@@ -29,6 +29,7 @@ class HomeScreen extends React.Component {
       taskName : '',
       taskId : '',
       status : '',
+      dueDate: '',
       modalVisible : false
     }
   }
@@ -41,6 +42,7 @@ class HomeScreen extends React.Component {
         taskName : data.taskName,
         taskId : data.taskId,
         status : data.status,
+        dueDate: data.dueDate,
         modalVisible : true
     })
   }
@@ -50,6 +52,7 @@ class HomeScreen extends React.Component {
       taskName : this.state.taskName,
       taskId : this.state.taskId,
       status : this.state.status,
+      dueDate : this.state.dueDate
     }
     this.props.updateTodo(obj);
     this.setState({
@@ -66,8 +69,9 @@ class HomeScreen extends React.Component {
   }
 
   render() {
+    const monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     return (
-      <View style={styles.container}>
+       <View style={styles.container}>
         <Modal
           visible={this.state.modalVisible}
           transparent={false}
@@ -89,6 +93,7 @@ class HomeScreen extends React.Component {
               />
               <Switch style={styles.switch} value={this.state.status == 'A' ? false : true} onValueChange={this.changeTaskStatus} />
               <Text>{this.state.status == 'A' ? 'Task is Active' : 'Task Completed'}</Text>
+              {this.state.dueDate != '' && <Text>{'Due Date :  ' + this.state.dueDate.split('-')[0] + ' ' + monthArr[parseInt(this.state.dueDate.split('-')[1]) - 1] + ', ' + this.state.dueDate.split('-')[2]}</Text>}
               <Button 
                 title="UPDATE TASK"
                 color="blue"
@@ -99,7 +104,7 @@ class HomeScreen extends React.Component {
         </Modal>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            {this.props.todos.map((item, i)=> {
+            {this.props.todos.map((item)=> {
               var oneday = 1000 * 60 * 60 * 24;
               var today = new Date();
               var date_1 = today.getTime();

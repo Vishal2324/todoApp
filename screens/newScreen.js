@@ -55,10 +55,11 @@ class NewScreen extends React.Component {
         let obj = {
           taskId : this.props.todos.length + 1,
           taskName : this.state.taskname,
-          status : 'A'
+          status : 'A',
+          dueDate : this.state.taskdate 
         }
         this.props.addTodo(obj);
-        this.setState({taskname : ''},
+        this.setState({taskname : '', taskdate: ''},
         ()=>{
           alert('task added succesfully!');
         })

@@ -29,6 +29,7 @@ const initialState = {
 export default function todo_reducer(state = initialState, action) {
   switch (action.type) {
     case ADD_TODO:
+    console.log(action.todo);
       return {
         todos: [
             ...state.todos,
